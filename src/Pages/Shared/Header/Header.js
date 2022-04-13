@@ -1,7 +1,16 @@
+import { signOut } from 'firebase/auth';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { Link, useNavigate } from 'react-router-dom';
+import auth from '../../../firebase.init';
 
 const Header = () => {
+    const [user, loading, error] = useAuthState(auth);
+    const navigate = useNavigate();
+    const handleSignOut = () => {
+        signOut(auth);
+        navigate('/login');
+    }
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
@@ -21,9 +30,14 @@ const Header = () => {
                         <li className="nav-item">
                             <Link className="nav-link active" to='/checkin'>Check In</Link>
                         </li>
-                        <li className="nav-item">
-                            <Link className="nav-link active" to='/login'>Log In</Link>
-                        </li>
+                        {
+                            user ?
+                                <button onClick={handleSignOut} className="btn btn-outline-primary">Sign Out</button>
+                                :
+                                <li className="nav-item">
+                                    <Link className="nav-link active" to='/login'>Log In</Link>
+                                </li>
+                        }
                     </ul>
                     <form className="d-flex">
                         <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />

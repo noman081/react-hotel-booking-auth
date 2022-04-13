@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../images/google_logo.png';
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useCreateUserWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init';
 const SignUp = () => {
     const [email, setEmail] = useState('');
@@ -15,6 +15,11 @@ const SignUp = () => {
         loading,
         error,
     ] = useCreateUserWithEmailAndPassword(auth);
+
+    const [signInWithGoogle, user1] = useSignInWithGoogle(auth);
+    const handleGoogleSignIn = () => {
+        signInWithGoogle();
+    }
     const handleSubmit = event => {
         event.preventDefault();
         console.log('submitted', email, password, confirmPassword);
@@ -28,7 +33,7 @@ const SignUp = () => {
         }
         createUserWithEmailAndPassword(email, password);
     }
-    if (user) {
+    if (user || user1) {
         navigate('/');
     }
     const handleEmailBlur = event => {
@@ -70,7 +75,7 @@ const SignUp = () => {
             <div className='text-center mt-3'>
                 <h4>or</h4>
                 <hr />
-                <button type="button" className="btn btn-outline-dark"><img height='40px' width='100%' src={logo} alt="" /></button>
+                <button onClick={handleGoogleSignIn} type="button" className="btn btn-outline-dark"><img height='40px' width='100%' src={logo} alt="" /></button>
             </div>
             <div className='text-center mt-3'>
                 <p>
